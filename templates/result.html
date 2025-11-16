@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tu pareja</title>
+    <style>
+      :root {
+        font-size: 16px;
+        --azul-profundo: #0a232f;
+        --azul-oscuro: #03131f;
+        --dorado: #d4af37;
+        --dorado-claro: #f6d464;
+      }
+      body {
+        font-family: "Nunito", Arial, sans-serif;
+        background: radial-gradient(circle at top, #123a4f 0%, var(--azul-oscuro) 70%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 1.5rem;
+      }
+      .card {
+        background: var(--azul-profundo);
+        padding: 2.2rem 2rem 1.8rem;
+        border-radius: 18px;
+        box-shadow: 0 25px 45px rgba(1, 10, 18, 0.7);
+        width: 100%;
+        max-width: 520px;
+        text-align: center;
+        border: 2px solid rgba(212, 175, 55, 0.35);
+      }
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.45);
+        }
+        70% {
+          box-shadow: 0 0 0 22px rgba(212, 175, 55, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+        }
+      }
+      h1 {
+        margin-bottom: 1.2rem;
+        color: var(--dorado);
+        letter-spacing: 0.05em;
+      }
+      p {
+        font-size: 1.5rem;
+        color: #f2f6fa;
+        margin-top: 0;
+      }
+      .roulette {
+        margin: 1rem auto;
+        width: min(220px, 70vw);
+        height: min(220px, 70vw);
+        border-radius: 50%;
+        border: 6px solid rgba(212, 175, 55, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        animation: pulse 1.5s infinite;
+      }
+      .roulette::after {
+        content: "";
+        position: absolute;
+        top: -18px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 18px solid var(--dorado);
+      }
+      .roulette-inner {
+        width: calc(100% - 35px);
+        height: calc(100% - 35px);
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(246, 212, 100, 0.15));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 1rem;
+        font-weight: bold;
+        color: var(--dorado-claro);
+      }
+      .partner {
+        font-size: 2rem;
+        margin: 1rem 0 0.2rem;
+        font-weight: bold;
+        color: var(--dorado);
+        opacity: 0;
+        transition: opacity 0.8s ease-in-out;
+      }
+      .partner.show {
+        opacity: 1;
+      }
+      .hidden {
+        display: none;
+      }
+      .warning {
+        color: #2a0b00;
+        background: rgba(255, 236, 199, 0.85);
+        border-radius: 10px;
+        padding: 0.75rem;
+        margin-top: 1rem;
+        border: 1px solid rgba(212, 175, 55, 0.4);
+      }
+      a {
+        display: inline-block;
+        margin-top: 1.5rem;
+        text-decoration: none;
+        color: var(--azul-profundo);
+        background: linear-gradient(135deg, var(--dorado) 0%, var(--dorado-claro) 100%);
+        padding: 0.9rem 1.8rem;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        box-shadow: 0 12px 18px rgba(0, 0, 0, 0.35);
+      }
+      .hero-image {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid rgba(246, 212, 100, 0.4);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        margin-bottom: 1rem;
+      }
+      .subtext {
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: 1rem;
+      }
+      @media (max-width: 520px) {
+        :root {
+          font-size: 17px;
+        }
+        body {
+          padding: 1rem;
+        }
+        .card {
+          padding: 1.8rem 1.4rem 1.4rem;
+        }
+        h1 {
+          font-size: 1.6rem;
+        }
+        .roulette::after {
+          top: -16px;
+        }
+        .warning {
+          font-size: 0.95rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <img
+        src="{{ url_for('static', filename='img/Desayuno.png') }}"
+        alt="Desayuno 2025"
+        class="hero-image"
+      />
+      <h1>Quien será tu amigo secreto?</h1>
+      <p class="subtext">Celebremos con espíritu navideño</p>
+      <p>Hola {{ name }}, tu amigo secreto es:</p>
+      <div
+        class="roulette"
+        id="roulette"
+        data-names='{{ (participants or []) | tojson }}'
+      >
+        <div class="roulette-inner">
+          <span id="roulette-text">¿Quién será?</span>
+        </div>
+      </div>
+      <div class="partner" id="partner" data-partner="{{ partner }}">
+        {{ partner }}
+      </div>
+      {% if partner.startswith('SIN PAREJA') %}
+      <div class="warning">
+        Por ahora no hay más participantes disponibles para asignar tu amigo secreto.
+      </div>
+      {% endif %}
+      <a href="/">Volver al inicio</a>
+    </div>
+    <script>
+      const rouletteEl = document.getElementById("roulette");
+      const partnerEl = document.getElementById("partner");
+      const textEl = document.getElementById("roulette-text");
+      const namesData = rouletteEl.dataset.names || "[]";
+      const names = JSON.parse(namesData);
+      const finalName = partnerEl.dataset.partner;
+      if (!names.includes(finalName)) {
+        names.push(finalName);
+      }
+      const pool = names.length ? names : [finalName];
+      let index = 0;
+      const interval = setInterval(() => {
+        textEl.textContent = pool[index % pool.length];
+        index += 1;
+      }, 130);
+      setTimeout(() => {
+        clearInterval(interval);
+        rouletteEl.classList.add("hidden");
+        partnerEl.classList.add("show");
+      }, 3200);
+    </script>
+  </body>
+</html>

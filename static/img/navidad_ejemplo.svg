@@ -1,0 +1,20 @@
+<svg width="900" height="260" viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A232F" />
+      <stop offset="100%" stop-color="#123a4f" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#f6d464" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#f6d464" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="900" height="260" fill="url(#bg)" rx="20" />
+  <circle cx="200" cy="130" r="110" fill="url(#glow)" opacity="0.5" />
+  <path d="M200 40 L230 100 L170 100 Z" fill="#f6d464" opacity="0.9" />
+  <path d="M200 70 L260 150 L140 150 Z" fill="#f6d464" opacity="0.85" />
+  <path d="M200 110 L280 200 L120 200 Z" fill="#f6d464" opacity="0.8" />
+  <rect x="185" y="200" width="30" height="40" rx="5" fill="#8c5a30" />
+  <text x="470" y="120" font-family="'Trebuchet MS', Arial" font-size="52" fill="#f6d464" font-weight="bold" text-anchor="middle">Fiesta Navideña</text>
+  <text x="470" y="175" font-family="'Trebuchet MS', Arial" font-size="28" fill="#ffffff" text-anchor="middle">Coloca aquí tu imagen real</text>
+</svg>
