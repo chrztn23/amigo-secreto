@@ -170,7 +170,7 @@
       <div
         class="roulette"
         id="roulette"
-        data-names='{{ (participants or []) | tojson }}'
+        data-names='{{ (participants or []) | sort | tojson }}'
       >
         <div class="roulette-inner">
           <span id="roulette-text">¿Quién será?</span>
@@ -202,11 +202,16 @@
         textEl.textContent = pool[index % pool.length];
         index += 1;
       }, 130);
+      const scrollToRoulette = () => {
+        const offset = rouletteEl.getBoundingClientRect().top + window.scrollY - 120;
+        window.scrollTo({ top: Math.max(offset, 0), behavior: "smooth" });
+      };
+      scrollToRoulette();
       setTimeout(() => {
         clearInterval(interval);
         rouletteEl.classList.add("hidden");
         partnerEl.classList.add("show");
-      }, 3200);
+      }, 5200);
     </script>
   </body>
 </html>

@@ -4,7 +4,17 @@ import random
 from datetime import datetime
 
 import pandas as pd
-from flask import Flask, flash, redirect, render_template, request, url_for
+from flask import (
+    Flask,
+    abort,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    send_file,
+    url_for,
+)
 
 app = Flask(__name__)
 app.secret_key = "clave-super-secreta"
@@ -14,6 +24,7 @@ DATA_DIR = os.path.join(BASE_DIR, "data")
 PARTICIPANTS_FILE = os.path.join(DATA_DIR, "participantes.json")
 ASSIGNMENTS_FILE = os.path.join(DATA_DIR, "asignaciones.json")
 EXCEL_FILE = os.path.join(DATA_DIR, "asignaciones.xlsx")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "12345679")
 
 
 def load_participants():
@@ -81,12 +92,26 @@ def export_to_excel():
     df.to_excel(EXCEL_FILE, index=False, engine="openpyxl")
 
 
+def _get_json_payload():
+    """Return parsed JSON payload or abort if missing."""
+    data = request.get_json(silent=True)
+    if data is None:
+        abort(400, description="Se requiere un cuerpo JSON.")
+    return data
+
+
+def _require_password(provided):
+    """Abort the request if the password is incorrect."""
+    if provided != ADMIN_PASSWORD:
+        abort(401, description="Contraseña inválida.")
+
+
 @app.route("/", methods=["GET"])
 def index():
     participants = load_participants()
     assignments = load_assignments()
     available_names = get_available_names(participants, assignments)
-    return render_template("index.html", available_names=available_names)
+    return render_template("index.html", available_names=sorted(available_names))
 
 
 @app.route("/asignar", methods=["POST"])
@@ -136,6 +161,70 @@ def asignar():
         partner=partner,
         roulette_names=roulette_names,
         participants=participants,
+    )
+
+
+@app.route("/panel", methods=["GET"])
+def admin_panel():
+    """Renderiza la interfaz de administración protegida por contraseña."""
+    return render_template("admin.html")
+
+
+@app.route("/admin/asignaciones", methods=["GET", "POST", "DELETE"])
+def admin_assignments():
+    """Simple admin interface to consultar, actualizar o eliminar asignaciones."""
+    if request.method == "GET":
+        password = request.args.get("password")
+        _require_password(password)
+        assignments = load_assignments()
+        return jsonify({"assignments": assignments})
+
+    data = _get_json_payload()
+    password = data.get("password")
+    _require_password(password)
+
+    name = data.get("name", "").strip()
+    if not name:
+        abort(400, description="El campo 'name' es obligatorio.")
+
+    assignments = load_assignments()
+    if request.method == "DELETE":
+        new_assignments = [item for item in assignments if item["name"] != name]
+        if len(new_assignments) == len(assignments):
+            abort(404, description="No existe una asignación para ese nombre.")
+        save_assignments(new_assignments)
+        export_to_excel()
+        return jsonify({"status": "eliminado", "name": name})
+
+    partner = data.get("partner", "").strip()
+    if not partner:
+        abort(400, description="El campo 'partner' es obligatorio para actualizar.")
+
+    assignment = next((item for item in assignments if item["name"] == name), None)
+    if not assignment:
+        abort(404, description="No existe una asignación para ese nombre.")
+
+    assignment["partner"] = partner
+    assignment["timestamp"] = datetime.now().replace(microsecond=0).isoformat()
+    save_assignments(assignments)
+    export_to_excel()
+    return jsonify({"status": "actualizado", "assignment": assignment})
+
+
+@app.route("/admin/asignaciones/excel", methods=["GET"])
+def admin_download_excel():
+    """Descargar el archivo Excel con todas las asignaciones."""
+    password = request.args.get("password")
+    _require_password(password)
+    if not os.path.exists(EXCEL_FILE):
+        export_to_excel()
+    return send_file(
+        EXCEL_FILE,
+        mimetype=(
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        ),
+        as_attachment=True,
+        download_name="asignaciones.xlsx",
     )
 
 

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Panel de Asignaciones</title>
+    <style>
+      :root {
+        font-size: 16px;
+        --azul-profundo: #0a232f;
+        --azul-oscuro: #03131f;
+        --dorado: #d4af37;
+        --dorado-claro: #f6d464;
+      }
+      body {
+        font-family: "Nunito", Arial, sans-serif;
+        background: radial-gradient(circle at top, #123a4f 0%, var(--azul-oscuro) 75%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 1.5rem;
+        color: #f5f7fb;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .panel {
+        width: min(1100px, 95%);
+        background: rgba(10, 35, 47, 0.95);
+        border-radius: 20px;
+        border: 2px solid rgba(212, 175, 55, 0.4);
+        box-shadow: 0 35px 55px rgba(2, 11, 18, 0.8);
+        padding: 2rem;
+      }
+      h1 {
+        margin-top: 0;
+        color: var(--dorado-claro);
+        text-align: center;
+        letter-spacing: 0.04em;
+      }
+      .controls {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      label {
+        font-size: 0.95rem;
+        color: #d7e3ec;
+        margin-bottom: 0.4rem;
+        display: block;
+      }
+      input,
+      button {
+        width: 100%;
+        padding: 0.8rem;
+        border-radius: 10px;
+        border: 1px solid rgba(212, 175, 55, 0.4);
+        font-size: 1rem;
+      }
+      input {
+        background: rgba(3, 19, 31, 0.7);
+        color: #fdf6e8;
+      }
+      button {
+        background: linear-gradient(135deg, var(--dorado) 0%, var(--dorado-claro) 100%);
+        color: var(--azul-profundo);
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 28px rgba(0, 0, 0, 0.4);
+      }
+      button.secondary {
+        background: transparent;
+        border: 1px solid rgba(212, 175, 55, 0.5);
+        color: var(--dorado-claro);
+        box-shadow: none;
+      }
+      .message {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border-radius: 10px;
+        background: rgba(233, 84, 84, 0.2);
+        color: #ffd1d1;
+        display: none;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        font-size: 0.95rem;
+      }
+      th,
+      td {
+        padding: 0.75rem;
+        border-bottom: 1px solid rgba(246, 212, 100, 0.15);
+        text-align: left;
+      }
+      th {
+        color: var(--dorado);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.04em;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      .row-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .row-actions button {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+        border-radius: 8px;
+      }
+      .row-actions .danger {
+        background: #ff6b6b;
+        color: #1d0606;
+        border: none;
+        box-shadow: none;
+      }
+      .row-actions .danger:hover {
+        background: #ff8787;
+        transform: none;
+      }
+      .partner-input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 8px;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        color: #fff;
+        padding: 0.45rem;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: rgba(255, 255, 255, 0.7);
+        border: 1px dashed rgba(255, 255, 255, 0.2);
+        border-radius: 14px;
+        margin-top: 1rem;
+      }
+      @media (max-width: 720px) {
+        .panel {
+          padding: 1.5rem;
+        }
+        table {
+          font-size: 0.9rem;
+        }
+        .row-actions {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="panel">
+      <h1>Panel de Asignaciones</h1>
+      <div id="message" class="message"></div>
+      <div class="controls">
+        <div>
+          <label for="password-input">Contraseña de administrador</label>
+          <input type="password" id="password-input" placeholder="Ingresa la contraseña" />
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button id="load-btn">Cargar asignaciones</button>
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button id="download-btn" class="secondary">Descargar Excel</button>
+        </div>
+      </div>
+      <div id="table-container" class="empty-state">
+        Ingresa la contraseña y presiona “Cargar asignaciones”.
+      </div>
+    </div>
+    <script>
+      const state = {
+        password: "",
+        assignments: [],
+      };
+
+      const messageEl = document.getElementById("message");
+      const tableContainer = document.getElementById("table-container");
+      const passwordInput = document.getElementById("password-input");
+
+      const showMessage = (text, isError = true) => {
+        messageEl.textContent = text;
+        messageEl.style.display = "block";
+        messageEl.style.background = isError
+          ? "rgba(233, 84, 84, 0.2)"
+          : "rgba(70, 180, 120, 0.25)";
+        messageEl.style.color = isError ? "#ffd1d1" : "#d8ffe4";
+        setTimeout(() => {
+          messageEl.style.display = "none";
+        }, 3500);
+      };
+
+      const ensurePassword = () => {
+        state.password = passwordInput.value.trim();
+        if (!state.password) {
+          showMessage("Debes ingresar la contraseña para continuar.");
+          throw new Error("sin contraseña");
+        }
+      };
+
+      const renderTable = () => {
+        if (!state.assignments.length) {
+          tableContainer.className = "empty-state";
+          tableContainer.innerHTML =
+            "No hay asignaciones almacenadas. Realiza nuevas asignaciones desde la página principal.";
+          return;
+        }
+        const rows = state.assignments
+          .map(
+            (item, index) => `
+          <tr data-index="${index}">
+            <td>${item.name}</td>
+            <td>
+              <input class="partner-input" type="text" value="${item.partner}" />
+            </td>
+            <td>${item.timestamp || "-"}</td>
+            <td>
+              <div class="row-actions">
+                <button class="save-btn">Guardar</button>
+                <button class="danger delete-btn">Eliminar</button>
+              </div>
+            </td>
+          </tr>
+        `
+          )
+          .join("");
+        tableContainer.className = "";
+        tableContainer.innerHTML = `
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Pareja</th>
+                  <th>Fecha</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        `;
+      };
+
+      const fetchAssignments = async () => {
+        try {
+          ensurePassword();
+          const resp = await fetch(
+            `/admin/asignaciones?password=${encodeURIComponent(state.password)}`
+          );
+          if (!resp.ok) {
+            const error = await resp.json().catch(() => ({}));
+            throw new Error(error.description || "Error al cargar asignaciones");
+          }
+          const data = await resp.json();
+          state.assignments = data.assignments || [];
+          renderTable();
+          showMessage("Asignaciones cargadas correctamente.", false);
+        } catch (error) {
+          if (error.message !== "sin contraseña") {
+            showMessage(error.message);
+          }
+        }
+      };
+
+      const updateAssignment = async (index, newPartner) => {
+        const payload = {
+          password: state.password,
+          name: state.assignments[index].name,
+          partner: newPartner,
+        };
+        const resp = await fetch("/admin/asignaciones", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!resp.ok) {
+          const error = await resp.json().catch(() => ({}));
+          throw new Error(error.description || "No se pudo actualizar.");
+        }
+        const data = await resp.json();
+        state.assignments[index] = data.assignment;
+        renderTable();
+        showMessage(`Pareja de ${payload.name} actualizada.`, false);
+      };
+
+      const deleteAssignment = async (index) => {
+        const payload = {
+          password: state.password,
+          name: state.assignments[index].name,
+        };
+        const resp = await fetch("/admin/asignaciones", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!resp.ok) {
+          const error = await resp.json().catch(() => ({}));
+          throw new Error(error.description || "No se pudo eliminar.");
+        }
+        state.assignments.splice(index, 1);
+        renderTable();
+        showMessage(`Asignación de ${payload.name} eliminada.`, false);
+      };
+
+      const downloadExcel = async () => {
+        try {
+          ensurePassword();
+          const resp = await fetch(
+            `/admin/asignaciones/excel?password=${encodeURIComponent(state.password)}`
+          );
+          if (!resp.ok) {
+            throw new Error("No se pudo descargar el Excel.");
+          }
+          const blob = await resp.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "asignaciones.xlsx";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+        } catch (error) {
+          if (error.message !== "sin contraseña") {
+            showMessage(error.message);
+          }
+        }
+      };
+
+      document.getElementById("load-btn").addEventListener("click", fetchAssignments);
+      document.getElementById("download-btn").addEventListener("click", downloadExcel);
+
+      tableContainer.addEventListener("click", async (event) => {
+        const row = event.target.closest("tr");
+        if (!row) return;
+        const index = Number(row.dataset.index);
+        if (event.target.classList.contains("save-btn")) {
+          const input = row.querySelector(".partner-input");
+          const newPartner = input.value.trim();
+          if (!newPartner) {
+            showMessage("La pareja no puede estar vacía.");
+            return;
+          }
+          try {
+            await updateAssignment(index, newPartner);
+          } catch (error) {
+            showMessage(error.message);
+          }
+        } else if (event.target.classList.contains("delete-btn")) {
+          if (
+            confirm(`¿Seguro que deseas eliminar la asignación de ${state.assignments[index].name}?`)
+          ) {
+            try {
+              await deleteAssignment(index);
+            } catch (error) {
+              showMessage(error.message);
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
