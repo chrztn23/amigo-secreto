@@ -1,3 +1,149 @@
 {
-  "assignments": []
+  "assignments": [
+    {
+      "name": "LINA MARIA GARCIA",
+      "partner": "AMPARO GARCIA",
+      "timestamp": "2025-11-16T23:39:26"
+    },
+    {
+      "name": "CRISTIAN CAMILO PATIÑO",
+      "partner": "RAQUEL GARCIA",
+      "timestamp": "2025-11-16T23:41:50"
+    },
+    {
+      "name": "MILENA ORJUELA",
+      "partner": "JUAN DAVID GONZALEZ",
+      "timestamp": "2025-11-16T23:41:58"
+    },
+    {
+      "name": "LINA MARIA FERNANDEZ",
+      "partner": "MILENA ORJUELA",
+      "timestamp": "2025-11-16T23:45:02"
+    },
+    {
+      "name": "CAROLINA ORJUELA",
+      "partner": "SAMUEL JOSE GARCIA",
+      "timestamp": "2025-11-16T23:48:20"
+    },
+    {
+      "name": "CAMILO BARRETO",
+      "partner": "SANTIAGO NOVA",
+      "timestamp": "2025-11-16T23:49:35"
+    },
+    {
+      "name": "ALVARO GARCIA",
+      "partner": "FELISA GARCIA",
+      "timestamp": "2025-11-16T23:52:28"
+    },
+    {
+      "name": "MARTHA SIERRA",
+      "partner": "MARIA JOSE GONZALEZ",
+      "timestamp": "2025-11-16T23:52:56"
+    },
+    {
+      "name": "PAMELA GARCIA",
+      "partner": "MONICA GONZALEZ",
+      "timestamp": "2025-11-16T23:53:21"
+    },
+    {
+      "name": "JACOBO BARRETO",
+      "partner": "CARLOS ALBERTO ROJAS",
+      "timestamp": "2025-11-17T00:03:06"
+    },
+    {
+      "name": "TOMAS BARRETO",
+      "partner": "AURA MARIA PABON",
+      "timestamp": "2025-11-17T00:03:27"
+    },
+    {
+      "name": "AURA MARIA PABON",
+      "partner": "GLORIA GARCIA",
+      "timestamp": "2025-11-17T00:06:53"
+    },
+    {
+      "name": "SAMUEL JOSE GARCIA",
+      "partner": "ANGELA MARIA ROJAS",
+      "timestamp": "2025-11-17T00:11:05"
+    },
+    {
+      "name": "IVONNE ALARCON",
+      "partner": "SAMUEL FELIPE CIRCA",
+      "timestamp": "2025-11-17T00:11:32"
+    },
+    {
+      "name": "CARLOS ALBERTO ROJAS",
+      "partner": "SANDRA LILIANA ROJAS",
+      "timestamp": "2025-11-17T00:14:37"
+    },
+    {
+      "name": "SANDRA LILIANA ROJAS",
+      "partner": "JOHANA CASTELBLANCO",
+      "timestamp": "2025-11-17T00:15:28"
+    },
+    {
+      "name": "ORIELSON ROJAS",
+      "partner": "ESPERANZA GARCIA",
+      "timestamp": "2025-11-17T00:16:06"
+    },
+    {
+      "name": "SANTIAGO NOVA",
+      "partner": "LINA MARIA FERNANDEZ",
+      "timestamp": "2025-11-17T00:18:18"
+    },
+    {
+      "name": "GERARDO MORA",
+      "partner": "JULIANA GONZALEZ",
+      "timestamp": "2025-11-17T00:19:30"
+    },
+    {
+      "name": "FELISA GARCIA",
+      "partner": "LEONOR GARCIA",
+      "timestamp": "2025-11-17T00:21:05"
+    },
+    {
+      "name": "ANGELA MARIA ROJAS",
+      "partner": "MARTHA SIERRA",
+      "timestamp": "2025-11-17T00:21:21"
+    },
+    {
+      "name": "LUIS HENANDO ORJUELA",
+      "partner": "ALVARO GARCIA",
+      "timestamp": "2025-11-17T00:24:44"
+    },
+    {
+      "name": "JERONIMO ORJUELA",
+      "partner": "ERIKA ORJUELA",
+      "timestamp": "2025-11-17T00:25:04"
+    },
+    {
+      "name": "ERIKA ORJUELA",
+      "partner": "JERONIMO ORJUELA",
+      "timestamp": "2025-11-17T00:25:30"
+    },
+    {
+      "name": "YOLANDA GARCIA",
+      "partner": "ANDRES MONCADA",
+      "timestamp": "2025-11-17T00:25:30"
+    },
+    {
+      "name": "LEONOR GARCIA",
+      "partner": "TOMAS BARRETO",
+      "timestamp": "2025-11-17T00:29:15"
+    },
+    {
+      "name": "ESPERANZA GARCIA",
+      "partner": "IVONNE ALARCON",
+      "timestamp": "2025-11-17T00:30:02"
+    },
+    {
+      "name": "ALVARO CAMILO",
+      "partner": "JACOBO BARRETO",
+      "timestamp": "2025-11-17T00:32:28"
+    },
+    {
+      "name": "MONICA GONZALEZ",
+      "partner": "CAMILO BARRETO",
+      "timestamp": "2025-11-17T00:32:49"
+    }
+  ]
 }
