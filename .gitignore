@@ -4,4 +4,5 @@ __pycache__/
 instance/
 .env
 venv/
+/data/
 .DS_Store

@@ -4,61 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tu pareja</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='sorteo.css') }}" />
     <style>
-      :root {
-        font-size: 16px;
-        --azul-profundo: #0a232f;
-        --azul-oscuro: #03131f;
-        --dorado: #d4af37;
-        --dorado-claro: #f6d464;
-      }
-      body {
-        font-family: "Nunito", Arial, sans-serif;
-        background: radial-gradient(circle at top, #123a4f 0%, var(--azul-oscuro) 70%);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        margin: 0;
-        padding: 1.5rem;
-      }
       .card {
-        background: var(--azul-profundo);
-        padding: 2.2rem 2rem 1.8rem;
-        border-radius: 18px;
-        box-shadow: 0 25px 45px rgba(1, 10, 18, 0.7);
-        width: 100%;
-        max-width: 520px;
-        text-align: center;
-        border: 2px solid rgba(212, 175, 55, 0.35);
+        width: min(100%, 36.75rem);
       }
       @keyframes pulse {
         0% {
-          box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.45);
+          box-shadow: 0 0 0 0 rgb(205 147 58 / 36%);
         }
         70% {
-          box-shadow: 0 0 0 22px rgba(212, 175, 55, 0);
+          box-shadow: 0 0 0 22px transparent;
         }
         100% {
-          box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+          box-shadow: 0 0 0 0 transparent;
         }
       }
-      h1 {
-        margin-bottom: 1.2rem;
-        color: var(--dorado);
-        letter-spacing: 0.05em;
-      }
       p {
-        font-size: 1.5rem;
-        color: #f2f6fa;
+        font-size: 1.2rem;
+        line-height: 1.45;
         margin-top: 0;
       }
       .roulette {
-        margin: 1rem auto;
-        width: min(220px, 70vw);
-        height: min(220px, 70vw);
+        box-sizing: border-box;
+        margin: 1.5rem auto 1rem;
+        width: min(220px, 100%);
+        aspect-ratio: 1;
         border-radius: 50%;
-        border: 6px solid rgba(212, 175, 55, 0.8);
+        border: 5px solid #cc923e;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -75,13 +48,14 @@
         height: 0;
         border-left: 10px solid transparent;
         border-right: 10px solid transparent;
-        border-bottom: 18px solid var(--dorado);
+        border-bottom: 18px solid var(--dorado-oscuro);
       }
       .roulette-inner {
-        width: calc(100% - 35px);
-        height: calc(100% - 35px);
+        box-sizing: border-box;
+        width: calc(100% - 16px);
+        height: calc(100% - 16px);
         border-radius: 50%;
-        background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(246, 212, 100, 0.15));
+        background: radial-gradient(circle at top, #385677, var(--azul-profundo));
         display: flex;
         align-items: center;
         justify-content: center;
@@ -94,7 +68,7 @@
         font-size: 2rem;
         margin: 1rem 0 0.2rem;
         font-weight: bold;
-        color: var(--dorado);
+        color: var(--dorado-oscuro);
         opacity: 0;
         transition: opacity 0.8s ease-in-out;
       }
@@ -105,52 +79,22 @@
         display: none;
       }
       .warning {
-        color: #2a0b00;
-        background: rgba(255, 236, 199, 0.85);
+        color: #684019;
+        background: #ffedcc;
         border-radius: 10px;
         padding: 0.75rem;
         margin-top: 1rem;
-        border: 1px solid rgba(212, 175, 55, 0.4);
+        border: 1px solid #dfb878;
       }
       a {
         display: inline-block;
         margin-top: 1.5rem;
-        text-decoration: none;
-        color: var(--azul-profundo);
-        background: linear-gradient(135deg, var(--dorado) 0%, var(--dorado-claro) 100%);
-        padding: 0.9rem 1.8rem;
-        border-radius: 12px;
-        font-size: 1.05rem;
-        font-weight: 700;
-        box-shadow: 0 12px 18px rgba(0, 0, 0, 0.35);
-      }
-      .hero-image {
-        width: 100%;
-        border-radius: 12px;
-        border: 1px solid rgba(246, 212, 100, 0.4);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-        margin-bottom: 1rem;
       }
       .subtext {
-        color: rgba(255, 255, 255, 0.75);
+        color: var(--azul-suave);
         margin-bottom: 1rem;
       }
       @media (max-width: 520px) {
-        :root {
-          font-size: 17px;
-        }
-        body {
-          padding: 1rem;
-        }
-        .card {
-          padding: 1.8rem 1.4rem 1.4rem;
-        }
-        h1 {
-          font-size: 1.6rem;
-        }
-        .roulette::after {
-          top: -16px;
-        }
         .warning {
           font-size: 0.95rem;
         }
@@ -160,8 +104,10 @@
   <body>
     <div class="card">
       <img
-        src="{{ url_for('static', filename='img/Desayuno.png') }}"
-        alt="Desayuno 2025"
+        src="{{ url_for('static', filename='img/pesebre-nevado.png') }}"
+        alt="Pesebre nevado bajo una estrella dorada"
+        width="1354"
+        height="1161"
         class="hero-image"
       />
       <h1>Quien será tu amigo secreto?</h1>
@@ -170,7 +116,7 @@
       <div
         class="roulette"
         id="roulette"
-        data-names='{{ (participants or []) | sort | tojson }}'
+        data-names='{{ (participants or []) | tojson }}'
       >
         <div class="roulette-inner">
           <span id="roulette-text">¿Quién será?</span>
@@ -184,7 +130,7 @@
         Por ahora no hay más participantes disponibles para asignar tu amigo secreto.
       </div>
       {% endif %}
-      <a href="/">Volver al inicio</a>
+      <a class="primary-action" href="/">Volver al inicio</a>
     </div>
     <script>
       const rouletteEl = document.getElementById("roulette");
@@ -196,12 +142,23 @@
       if (!names.includes(finalName)) {
         names.push(finalName);
       }
-      const pool = names.length ? names : [finalName];
-      let index = 0;
+      let pool = [];
+      const duration = 5200;
+      const step = Math.min(130, Math.floor((duration - 200) / names.length));
       const interval = setInterval(() => {
-        textEl.textContent = pool[index % pool.length];
-        index += 1;
-      }, 130);
+        if (!pool.length) {
+          pool = [...names];
+          for (let index = pool.length - 1; index > 0; index -= 1) {
+            const other = Math.floor(Math.random() * (index + 1));
+            [pool[index], pool[other]] = [pool[other], pool[index]];
+          }
+          const lastIndex = pool.length - 1;
+          if (lastIndex > 0 && pool[lastIndex] === textEl.textContent) {
+            [pool[0], pool[lastIndex]] = [pool[lastIndex], pool[0]];
+          }
+        }
+        textEl.textContent = pool.pop();
+      }, step);
       const scrollToRoulette = () => {
         const offset = rouletteEl.getBoundingClientRect().top + window.scrollY - 120;
         window.scrollTo({ top: Math.max(offset, 0), behavior: "smooth" });
@@ -211,7 +168,7 @@
         clearInterval(interval);
         rouletteEl.classList.add("hidden");
         partnerEl.classList.add("show");
-      }, 5200);
+      }, duration);
     </script>
   </body>
 </html>
