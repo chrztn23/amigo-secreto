@@ -49,13 +49,13 @@ En el VPS, ejecuta:
 sudo docker compose version
 sudo apt update
 sudo apt install -y git curl openssl
-git clone https://github.com/chrztn23/amigo-secreto.git
-cd amigo-secreto
+git clone https://github.com/chrztn23/amigo-secreto.git "$HOME/amigo-secreto"
+cd "$HOME/amigo-secreto"
 mkdir -p "$HOME/amigo-secreto-carga"
 chmod 700 "$HOME/amigo-secreto-carga"
 ```
 
-Si ya clonaste el repositorio, entra a esa carpeta y usa `git pull --ff-only` para obtener la versión actual.
+Si ya clonaste el repositorio, entra a esa carpeta y usa `git pull --ff-only` para obtener la versión actual. Ejecuta Git con tu usuario de SSH, que necesita permiso de escritura en la carpeta que elijas para el repositorio.
 
 ### 2. Sube el Excel y los resultados que quieras continuar
 
