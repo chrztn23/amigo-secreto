@@ -1,0 +1,8 @@
+*
+!requirements.txt
+!app.py
+!draw.py
+!templates/
+!templates/**
+!static/
+!static/**

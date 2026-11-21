@@ -1,0 +1,18 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${AMIGO_HTTP_PORT:-5000}:8000"
+    environment:
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:-}"
+      SECRET_KEY: "${SECRET_KEY:-}"
+      AMIGO_SECRETO_DATA_DIR: /app/data
+    volumes:
+      - type: bind
+        source: "${AMIGO_HOST_DATA_DIR:-./data}"
+        target: /app/data
+      - type: bind
+        source: "${AMIGO_HOST_INSTANCE_DIR:-./instance}"
+        target: /app/instance
+        read_only: true
