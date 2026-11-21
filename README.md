@@ -49,13 +49,24 @@ En el VPS, ejecuta:
 sudo docker compose version
 sudo apt update
 sudo apt install -y git curl openssl
-git clone https://github.com/chrztn23/amigo-secreto.git "$HOME/amigo-secreto"
-cd "$HOME/amigo-secreto"
+```
+
+Si ya tienes una carpeta de trabajo en el VPS, asigna su ruta a `DIRECTORIO_TRABAJO`. Ejecuta el clonado con tu usuario de SSH y usa una carpeta donde ese usuario tenga permiso de escritura.
+
+```sh
+DIRECTORIO_TRABAJO="$HOME"
+git clone https://github.com/chrztn23/amigo-secreto.git "$DIRECTORIO_TRABAJO/amigo-secreto" &&
+  cd "$DIRECTORIO_TRABAJO/amigo-secreto"
+```
+
+Si la carpeta existente está vacía y la reservaste para el proyecto, entra en ella y usa `git clone https://github.com/chrztn23/amigo-secreto.git .`. Si ya contiene un clon, entra y usa `git pull --ff-only`.
+
+Crea la carpeta privada para recibir los archivos que subirás por SSH.
+
+```sh
 mkdir -p "$HOME/amigo-secreto-carga"
 chmod 700 "$HOME/amigo-secreto-carga"
 ```
-
-Si ya clonaste el repositorio, entra a esa carpeta y usa `git pull --ff-only` para obtener la versión actual. Ejecuta Git con tu usuario de SSH, que necesita permiso de escritura en la carpeta que elijas para el repositorio.
 
 ### 2. Sube el Excel y los resultados que quieras continuar
 
