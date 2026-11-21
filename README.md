@@ -61,33 +61,35 @@ git clone https://github.com/chrztn23/amigo-secreto.git "$DIRECTORIO_TRABAJO/ami
 
 Si la carpeta existente está vacía y la reservaste para el proyecto, entra en ella y usa `git clone https://github.com/chrztn23/amigo-secreto.git .`. Si ya contiene un clon, entra y usa `git pull --ff-only`.
 
-Crea la carpeta privada para recibir los archivos que subirás por SSH.
-
-```sh
-mkdir -p "$HOME/amigo-secreto-carga"
-chmod 700 "$HOME/amigo-secreto-carga"
-```
-
 ### 2. Sube el Excel y los resultados que quieras continuar
 
-Desde PowerShell en tu equipo, en la carpeta del proyecto, envía el Excel al VPS.
+En el VPS, con el mismo usuario que usas para SCP, crea una carpeta privada de carga. Puedes cambiar `CARPETA_CARGA` por una ruta dentro de tu carpeta de trabajo donde tu usuario pueda escribir. Guarda la ruta absoluta que imprime el último comando.
+
+```sh
+CARPETA_CARGA="$HOME/amigo-secreto-carga"
+mkdir -p "$CARPETA_CARGA" &&
+  chmod 700 "$CARPETA_CARGA" &&
+  (cd "$CARPETA_CARGA" && pwd -P)
+```
+
+Desde PowerShell en tu equipo, sustituye `/ruta/absoluta/amigo-secreto-carga` por la ruta que imprimió el VPS. Luego envía el Excel desde la carpeta del proyecto.
 
 ```powershell
-scp .\data\participantes.xlsx usuario@IP_DEL_VPS:amigo-secreto-carga/
+scp .\data\participantes.xlsx "usuario@IP_DEL_VPS:/ruta/absoluta/amigo-secreto-carga/"
 ```
 
 Si quieres continuar con las asignaciones locales, envía también `asignaciones.json`.
 
 ```powershell
-scp .\data\asignaciones.json usuario@IP_DEL_VPS:amigo-secreto-carga/
+scp .\data\asignaciones.json "usuario@IP_DEL_VPS:/ruta/absoluta/amigo-secreto-carga/"
 ```
 
-De vuelta en el VPS, prepara la carpeta que Compose montará. La aplicación se ejecuta con el usuario `10001`.
+De vuelta en el VPS, prepara la carpeta que Compose montará. Si abriste otra sesión SSH, vuelve a definir `CARPETA_CARGA` con la ruta que usaste para SCP. La aplicación se ejecuta con el usuario `10001`.
 
 ```sh
 sudo install -d -m 0750 -o 10001 -g 10001 /srv/amigo-secreto/data
 sudo install -m 0640 -o 10001 -g 10001 \
-  "$HOME/amigo-secreto-carga/participantes.xlsx" /srv/amigo-secreto/data/participantes.xlsx
+  "$CARPETA_CARGA/participantes.xlsx" /srv/amigo-secreto/data/participantes.xlsx
 ```
 
 Si enviaste las asignaciones, este comando las importa cuando la carpeta de destino todavía no tiene resultados.
@@ -95,7 +97,7 @@ Si enviaste las asignaciones, este comando las importa cuando la carpeta de dest
 ```sh
 if ! sudo test -e /srv/amigo-secreto/data/asignaciones.json; then
   sudo install -m 0600 -o 10001 -g 10001 \
-    "$HOME/amigo-secreto-carga/asignaciones.json" /srv/amigo-secreto/data/asignaciones.json
+    "$CARPETA_CARGA/asignaciones.json" /srv/amigo-secreto/data/asignaciones.json
 fi
 ```
 
