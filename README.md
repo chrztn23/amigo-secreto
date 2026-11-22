@@ -21,15 +21,20 @@ Abre [Amigo Secreto](http://127.0.0.1:5000/) o el [panel de administración](htt
 
 ## Docker Compose
 
-Coloca `participantes.xlsx` en `data/` y arranca Docker. Desde la carpeta del proyecto, ejecuta:
+En Docker Desktop, arranca el motor Linux. Desde la carpeta del proyecto, coloca `participantes.xlsx` en `data/` y crea un `.env` a partir de `.env.example` si aún no tienes uno. Configura las claves en el `.env`:
+
+- `ADMIN_PASSWORD` es la contraseña que escribes en `/panel`. Si la dejas vacía, la aplicación lee `instance/admin-password.txt`.
+- `SECRET_KEY` permite a Flask comprobar la autenticidad de las sesiones del navegador. Usa una clave aleatoria y consérvala entre reinicios para mantener las sesiones. En el VPS puedes generarla con `openssl rand -hex 32`.
+
+Levanta el contenedor desde la carpeta del proyecto:
 
 ```sh
 docker compose up -d --build
 ```
 
-Abre [Amigo Secreto](http://127.0.0.1:5000/). Si el puerto está ocupado, añade `AMIGO_HTTP_PORT=5050` a un archivo `.env` local y abre el puerto 5050.
+Abre [Amigo Secreto](http://127.0.0.1:5000/) o el [panel](http://127.0.0.1:5000/panel). Si el puerto está ocupado, cambia `AMIGO_HTTP_PORT` en `.env` y abre el puerto que configuraste.
 
-Define `ADMIN_PASSWORD` en `.env` o usa `instance/admin-password.txt` para acceder al panel. Compose guarda las asignaciones en la carpeta de datos del equipo. Si quieres probar mientras el sorteo real sigue abierto, usa una carpeta con datos de prueba mediante `AMIGO_HOST_DATA_DIR` y un puerto distinto.
+Compose guarda las asignaciones en la carpeta de datos del equipo. Si quieres probar mientras el sorteo real sigue abierto, usa una carpeta con datos de prueba mediante `AMIGO_HOST_DATA_DIR` y un puerto distinto.
 
 ## Publicar en un VPS con Docker
 
