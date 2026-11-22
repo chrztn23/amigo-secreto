@@ -63,42 +63,32 @@ Si la carpeta existente está vacía y la reservaste para el proyecto, entra en 
 
 ### 2. Sube el Excel y los resultados que quieras continuar
 
-En el VPS, con el mismo usuario que usas para SCP, crea una carpeta privada de carga. Puedes cambiar `CARPETA_CARGA` por una ruta dentro de tu carpeta de trabajo donde tu usuario pueda escribir. Guarda la ruta absoluta que imprime el último comando.
+Para la primera carga y antes de arrancar Docker, crea la carpeta definitiva de datos con tu usuario de SSH como propietario. Si eliges la carpeta `data` del proyecto, usa su ruta absoluta en este paso y en `AMIGO_HOST_DATA_DIR`.
 
 ```sh
-CARPETA_CARGA="$HOME/amigo-secreto-carga"
-mkdir -p "$CARPETA_CARGA" &&
-  chmod 700 "$CARPETA_CARGA" &&
-  (cd "$CARPETA_CARGA" && pwd -P)
+sudo install -d -m 0700 -o "$(id -u)" -g "$(id -g)" /srv/amigo-secreto/data
 ```
 
-Desde PowerShell en tu equipo, sustituye `/ruta/absoluta/amigo-secreto-carga` por la ruta que imprimió el VPS. Luego envía el Excel desde la carpeta del proyecto.
+Desde PowerShell en tu equipo, sube el Excel directamente a esa carpeta.
 
 ```powershell
-scp .\data\participantes.xlsx "usuario@IP_DEL_VPS:/ruta/absoluta/amigo-secreto-carga/"
+scp .\data\participantes.xlsx "usuario@IP_DEL_VPS:/srv/amigo-secreto/data/"
 ```
 
-Si quieres continuar con las asignaciones locales, envía también `asignaciones.json`.
+Si vas a continuar un sorteo iniciado en tu equipo y la carpeta de datos del VPS está vacía de resultados, envía también `asignaciones.json`.
 
 ```powershell
-scp .\data\asignaciones.json "usuario@IP_DEL_VPS:/ruta/absoluta/amigo-secreto-carga/"
+scp .\data\asignaciones.json "usuario@IP_DEL_VPS:/srv/amigo-secreto/data/"
 ```
 
-De vuelta en el VPS, prepara la carpeta que Compose montará. Si abriste otra sesión SSH, vuelve a definir `CARPETA_CARGA` con la ruta que usaste para SCP. La aplicación se ejecuta con el usuario `10001`.
+Al terminar la carga, asigna la carpeta y sus archivos al UID `10001`, que usa la aplicación dentro de Docker.
 
 ```sh
-sudo install -d -m 0750 -o 10001 -g 10001 /srv/amigo-secreto/data
-sudo install -m 0640 -o 10001 -g 10001 \
-  "$CARPETA_CARGA/participantes.xlsx" /srv/amigo-secreto/data/participantes.xlsx
-```
-
-Si enviaste las asignaciones, este comando las importa cuando la carpeta de destino todavía no tiene resultados.
-
-```sh
-if ! sudo test -e /srv/amigo-secreto/data/asignaciones.json; then
-  sudo install -m 0600 -o 10001 -g 10001 \
-    "$CARPETA_CARGA/asignaciones.json" /srv/amigo-secreto/data/asignaciones.json
+sudo chown 10001:10001 /srv/amigo-secreto/data/participantes.xlsx
+if sudo test -f /srv/amigo-secreto/data/asignaciones.json; then
+  sudo chown 10001:10001 /srv/amigo-secreto/data/asignaciones.json
 fi
+sudo chown 10001:10001 /srv/amigo-secreto/data
 ```
 
 ### 3. Configura la contraseña y arranca el contenedor
